@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "api": "json-server --watch src/assets/data/db.json --port 3000",
-    "deploy": "ng build --base-href /gas-management/ && gh-pages -d dist/gas-management"
+    "deploy": "ng build --base-href /gas-management/ && node -e \"require('fs').copyFileSync('dist/gas-management/browser/index.html', 'dist/gas-management/browser/404.html')\" && gh-pages -d dist/gas-management/browser"
   },
   "private": true,
   "dependencies": {

@@ -1,69 +1,127 @@
 <div class="settings-container">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>⚙️ Cài đặt vị trí cửa hàng gas</mat-card-title>
-          <mat-card-subtitle>Thiết lập vị trí cửa hàng để tính đường đi giao gas</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="info-text">
-            <p>📌 <strong>Vị trí hiện tại:</strong></p>
-            <p class="coord-display">Vĩ độ: {{ location.lat }} | Kinh độ: {{ location.lng }}</p>
-          </div>
+  <!-- Store Location Card -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>⚙️ Cài đặt vị trí cửa hàng gas</mat-card-title>
+      <mat-card-subtitle>Thiết lập vị trí cửa hàng để tính đường đi giao gas</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="info-text">
+        <p>📌 <strong>Vị trí hiện tại:</strong></p>
+        <p class="coord-display">Vĩ độ: {{ location.lat }} | Kinh độ: {{ location.lng }}</p>
+      </div>
 
-          <div class="gps-row">
-            <button mat-raised-button color="accent" type="button" (click)="getCurrentLocation()" [disabled]="isGettingLocation" class="gps-btn">
-              <span class="material-icons">my_location</span>
-              {{ isGettingLocation ? 'Đang lấy vị trí...' : '📍 Lấy vị trí hiện tại (GPS)' }}
-            </button>
-          </div>
+      <div class="gps-row">
+        <button mat-raised-button color="accent" type="button" (click)="getCurrentLocation()" [disabled]="isGettingLocation" class="gps-btn">
+          <span class="material-icons">my_location</span>
+          {{ isGettingLocation ? 'Đang lấy vị trí...' : '📍 Lấy vị trí hiện tại (GPS)' }}
+        </button>
+      </div>
 
-          <!-- Search address with autocomplete -->
-          <div class="form-row">
-            <div class="search-box">
-              <span class="material-icons search-icon">search</span>
-              <input
-                type="text"
-                [(ngModel)]="searchText"
-                (input)="onSearchInput()"
-                placeholder="🔍 Tìm địa điểm (vd: Long Phụng, Quảng Ngãi)..."
-                class="search-input"
-              />
-              <button mat-button *ngIf="searchText" (click)="clearSearch()" class="clear-btn">
-                <span class="material-icons">close</span>
-              </button>
-              <div class="search-results" *ngIf="searchResults.length > 0">
-                <div
-                  class="search-result-item"
-                  *ngFor="let result of searchResults"
-                  (click)="selectLocation(result)"
-                  [innerHTML]="result.display_name">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Tên cửa hàng</mat-label>
-              <input matInput [(ngModel)]="location.address" placeholder="VD: Cửa hàng gas Long Phụng">
-            </mat-form-field>
-          </div>
-
-          <div class="map-section">
-            <label class="map-label">🗺️ Kéo thả marker để chọn vị trí cửa hàng:</label>
-            <div class="coord-info" *ngIf="markerLat && markerLng">
-              Vĩ độ: {{ markerLat.toFixed(6) }}, Kinh độ: {{ markerLng.toFixed(6) }}
-            </div>
-            <div class="map-container">
-              <div id="settings-map"></div>
-            </div>
-          </div>
-        </mat-card-content>
-        <mat-card-actions align="end">
-          <button mat-button routerLink="/dashboard">Quay lại</button>
-          <button mat-raised-button color="primary" (click)="save()" [disabled]="!markerLat">
-            💾 Lưu vị trí
+      <!-- Search address with autocomplete -->
+      <div class="form-row">
+        <div class="search-box">
+          <span class="material-icons search-icon">search</span>
+          <input
+            type="text"
+            [(ngModel)]="searchText"
+            (input)="onSearchInput()"
+            placeholder="🔍 Tìm địa điểm (vd: Long Phụng, Quảng Ngãi)..."
+            class="search-input"
+          />
+          <button mat-button *ngIf="searchText" (click)="clearSearch()" class="clear-btn">
+            <span class="material-icons">close</span>
           </button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
+          <div class="search-results" *ngIf="searchResults.length > 0">
+            <div
+              class="search-result-item"
+              *ngFor="let result of searchResults"
+              (click)="selectLocation(result)"
+              [innerHTML]="result.display_name">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tên cửa hàng</mat-label>
+          <input matInput [(ngModel)]="location.address" placeholder="VD: Cửa hàng gas Long Phụng">
+        </mat-form-field>
+      </div>
+
+      <div class="map-section">
+        <label class="map-label">🗺️ Kéo thả marker để chọn vị trí cửa hàng:</label>
+        <div class="coord-info" *ngIf="markerLat && markerLng">
+          Vĩ độ: {{ markerLat.toFixed(6) }}, Kinh độ: {{ markerLng.toFixed(6) }}
+        </div>
+        <div class="map-container">
+          <div id="settings-map"></div>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-button routerLink="/dashboard">Quay lại</button>
+      <button mat-raised-button color="primary" (click)="saveLocation()" [disabled]="!markerLat">
+        💾 Lưu vị trí
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Google Sheets Card - dùng SheetDB -->
+  <mat-card class="gs-card">
+    <mat-card-header>
+      <mat-card-title>☁️ Đồng bộ Google Sheets (qua SheetDB)</mat-card-title>
+      <mat-card-subtitle>Đồng bộ dữ liệu khách hàng, đơn hàng, công nợ lên Google Sheet online</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="info-text gs-info">
+        <p>📋 <strong>Hướng dẫn nhanh:</strong></p>
+        <ol class="gs-steps">
+          <li>Mở sheet → <strong>File → Share → Publish to web</strong></li>
+          <li>Chọn <strong>"Entire Document" → "CSV"</strong> → <strong>Publish</strong></li>
+          <li>Copy <strong>Sheet ID</strong> từ URL (xem hướng dẫn bên dưới)</li>
+        </ol>
+        <button mat-button color="primary" (click)="copySetupGuide()" class="copy-btn">
+          📋 Copy hướng dẫn
+        </button>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Sheet ID</mat-label>
+          <input matInput [(ngModel)]="gsSheetId" placeholder="14J0DDZN8Jge-j23-BCG_ONq939XLG8EkkcdvlCghJBA">
+          <mat-hint>Copy từ URL: /d/&#123;SHEET_ID&#125;/edit</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row toggle-row">
+        <mat-slide-toggle [(ngModel)]="gsEnabled" color="primary">
+          <span class="toggle-label">{{ gsEnabled ? '🟢 Đã bật đồng bộ' : '🔴 Đã tắt đồng bộ' }}</span>
+        </mat-slide-toggle>
+      </div>
+
+      <div class="form-row gs-actions">
+        <button mat-raised-button color="primary" (click)="saveGsConfig()" class="gs-action-btn">
+          💾 Lưu cấu hình
+        </button>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="syncNow()"
+          [disabled]="isSyncing || !gsEnabled"
+          class="gs-action-btn">
+          <span class="material-icons">sync</span>
+          {{ isSyncing ? 'Đang đồng bộ...' : '🔄 Đồng bộ ngay' }}
+        </button>
+      </div>
+
+      <div class="gs-status" *ngIf="gsEnabled">
+        <p class="status-online">✅ Đã kết nối Google Sheets — dữ liệu sẽ được đồng bộ khi có mạng</p>
+      </div>
+      <div class="gs-status" *ngIf="!gsEnabled && gsSheetId">
+        <p class="status-offline">⏸️ Chưa bật đồng bộ — dữ liệu chỉ lưu trên máy</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

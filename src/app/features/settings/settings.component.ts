@@ -5,10 +5,12 @@ import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HttpClient } from '@angular/common/http';
 import * as L from 'leaflet';
 import { StoreLocationService, StoreLocation } from '../../core/services/store-location.service';
 import { ToastService } from '../../core/services/toast.service';
+import { GoogleSheetsService } from '../../core/services/google-sheets.service';
 
 // Fix Leaflet default marker icon paths
 delete (L.Icon.Default.prototype as any)['_getIconUrl'];
@@ -27,7 +29,7 @@ interface SearchResult {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [NgIf, NgFor, FormsModule, RouterLink, MatCardModule, MatButtonModule, MatInputModule],
+  imports: [NgIf, NgFor, FormsModule, RouterLink, MatCardModule, MatButtonModule, MatInputModule, MatSlideToggleModule],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']})
 export class SettingsComponent implements OnInit, OnDestroy {
@@ -37,6 +39,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   markerLng: number | null = null;
   searchText = '';
   searchResults: SearchResult[] = [];
+  isSyncing = false;
+
+  // Google Sheets config
+  gsSheetId = '';
+  gsEnabled = false;
+
   private searchTimeout: any;
   private map: L.Map | null = null;
   private marker: L.Marker | null = null;
@@ -44,11 +52,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
   constructor(
     private storeLocationService: StoreLocationService,
     private toast: ToastService,
-    private http: HttpClient
+    private http: HttpClient,
+    private gsService: GoogleSheetsService
   ) {
     this.location = this.storeLocationService.getLocation();
     this.markerLat = this.location.lat;
     this.markerLng = this.location.lng;
+
+    // Load Google Sheets config
+    this.gsSheetId = this.gsService.getSheetId();
+    this.gsEnabled = this.gsService.isEnabled();
   }
 
   ngOnInit(): void {
@@ -130,19 +143,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private searchLocation(query: string): void {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=VN`;
-    this.http.get<SearchResult[]>(url).subscribe({
-      next: (results) => {
-        this.searchResults = results;
-      },
-      error: () => {
-        this.searchResults = [];
-      }
-    });
-  }
-
-  save(): void {
+  saveLocation(): void {
     if (!this.markerLat || !this.markerLng) {
       this.toast.error('Vui lòng chọn vị trí trên bản đồ');
       return;
@@ -153,6 +154,80 @@ export class SettingsComponent implements OnInit, OnDestroy {
       address: this.location.address
     });
     this.toast.success('Đã lưu vị trí cửa hàng thành công ✅');
+  }
+
+  // ============================================================
+  // Google Sheets methods
+  // ============================================================
+
+  saveGsConfig(): void {
+    const trimmedId = this.gsSheetId.trim();
+
+    if (this.gsEnabled && !trimmedId) {
+      this.toast.error('Vui lòng nhập Sheet ID trước khi bật');
+      this.gsEnabled = false;
+      return;
+    }
+
+    this.gsService.setConfig({
+      sheetId: trimmedId,
+      enabled: this.gsEnabled
+    });
+
+    this.toast.success(
+      this.gsEnabled
+        ? '✅ Đã bật đồng bộ Google Sheets'
+        : 'Đã tắt đồng bộ Google Sheets'
+    );
+  }
+
+  async syncNow(): Promise<void> {
+    if (!this.gsService.isEnabled()) {
+      this.toast.error('Vui lòng bật Google Sheets trước');
+      return;
+    }
+
+    this.isSyncing = true;
+    try {
+      await this.gsService.syncAll();
+      this.toast.success('✅ Đã đồng bộ dữ liệu từ Google Sheets');
+    } catch (err) {
+      this.toast.error('Lỗi đồng bộ dữ liệu');
+    } finally {
+      this.isSyncing = false;
+    }
+  }
+
+  copySetupGuide(): void {
+    const guide = `Cách lấy Sheet ID:
+
+1. Mở Google Sheet của bạn
+2. Nhìn lên URL: https://docs.google.com/spreadsheets/d/14J0DDZN8Jge-j23-BCG_ONq939XLG8EkkcdvlCghJBA/edit
+3. Phần {SHEET_ID} là: 14J0DDZN8Jge-j23-BCG_ONq939XLG8EkkcdvlCghJBA
+4. Copy phần đó và dán vào ô "Sheet ID"
+
+Sau đó:
+5. File → Share → Publish to web
+6. Chọn "Entire Document" → "CSV" → Publish
+7. Về app bấm "Đồng bộ ngay"`;
+    
+    navigator.clipboard.writeText(guide).then(() => {
+      this.toast.success('Đã copy hướng dẫn vào clipboard');
+    }).catch(() => {
+      this.toast.error('Không thể copy, hãy làm theo hướng dẫn trên');
+    });
+  }
+
+  private searchLocation(query: string): void {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=VN`;
+    this.http.get<SearchResult[]>(url).subscribe({
+      next: (results) => {
+        this.searchResults = results;
+      },
+      error: () => {
+        this.searchResults = [];
+      }
+    });
   }
 
   private initMap(): void {

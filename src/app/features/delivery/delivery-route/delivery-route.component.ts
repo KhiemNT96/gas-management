@@ -20,6 +20,8 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+const OSRM_URL = 'https://router.project-osrm.org/route/v1';
+
 @Component({
   selector: 'app-delivery-route',
   standalone: true,
@@ -34,7 +36,7 @@ export class DeliveryRouteComponent implements OnInit, OnDestroy {
   isGettingLocation = false;
   private myLocationMarker: L.Marker | null = null;
   private map: L.Map | null = null;
-  private routingControl: any = null;
+  private routeLine: L.Polyline | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -55,8 +57,8 @@ export class DeliveryRouteComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.routingControl) {
-      (this.map as any)?.removeControl(this.routingControl);
+    if (this.routeLine) {
+      this.map?.removeLayer(this.routeLine);
     }
     this.map?.remove();
   }
@@ -91,38 +93,12 @@ export class DeliveryRouteComponent implements OnInit, OnDestroy {
           this.myLocationMarker = L.marker([lat, lng], { icon: myIcon }).addTo(this.map!);
         }
 
-        // Update routing from current location to customer
-        if (this.map && this.customer) {
-          this.map.flyTo([lat, lng], 15);
-
-          if (this.routingControl) {
-            (this.map as any).removeControl(this.routingControl);
+        // Get route from current location to customer
+        if (this.customer) {
+          if (this.map) {
+            this.map.flyTo([lat, lng], 15);
           }
-
-          this.routingControl = (L as any).Routing.control({
-            waypoints: [
-              L.latLng(lat, lng),
-              L.latLng(this.customer.latitude, this.customer.longitude)
-            ],
-            routeWhileDragging: false,
-            showAlternatives: false,
-            fitSelectedRoutes: true,
-            lineOptions: {
-              styles: [{ color: '#1a237e', weight: 4, opacity: 0.8 }]
-            },
-            createMarker: () => null
-          }).addTo(this.map!);
-
-          this.routingControl.on('routesfound', (e: any) => {
-            const routes = e.routes;
-            if (routes.length > 0) {
-              const summary = routes[0].summary;
-              this.routeDistance = summary.totalDistance > 1000
-                ? (summary.totalDistance / 1000).toFixed(1) + ' km'
-                : Math.round(summary.totalDistance) + ' m';
-              this.routeTime = Math.round(summary.totalTime / 60) + ' phút';
-            }
-          });
+          this.fetchRoute(lat, lng, this.customer.latitude, this.customer.longitude);
         }
       },
       (error) => {
@@ -141,6 +117,49 @@ export class DeliveryRouteComponent implements OnInit, OnDestroy {
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
+  }
+
+  private async fetchRoute(lat1: number, lng1: number, lat2: number, lng2: number): Promise<void> {
+    try {
+      const url = `${OSRM_URL}/driving/${lng1},${lat1};${lng2},${lat2}?geometries=geojson&overview=full&alternatives=false&steps=false`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.code !== 'Ok' || !data.routes || data.routes.length === 0) {
+        this.toast.error('Không tìm thấy đường đi');
+        return;
+      }
+
+      const route = data.routes[0];
+      const coords = route.geometry.coordinates.map((c: number[]) => [c[1], c[0]] as [number, number]);
+
+      // Remove old route line
+      if (this.routeLine) {
+        this.map?.removeLayer(this.routeLine);
+      }
+
+      // Draw new route
+      this.routeLine = L.polyline(coords, {
+        color: '#1a237e',
+        weight: 4,
+        opacity: 0.8
+      }).addTo(this.map!);
+
+      // Fit map to show the route
+      this.map?.fitBounds(this.routeLine.getBounds(), { padding: [50, 50] });
+
+      // Update stats
+      const summary = route.legs?.[0] || route;
+      const distance = summary.distance || 0;
+      const duration = summary.duration || 0;
+      this.routeDistance = distance > 1000
+        ? (distance / 1000).toFixed(1) + ' km'
+        : Math.round(distance) + ' m';
+      this.routeTime = Math.round(duration / 60) + ' phút';
+    } catch (err) {
+      console.error('OSRM error:', err);
+      this.toast.error('Lỗi tải đường đi, kiểm tra kết nối mạng');
+    }
   }
 
   private initMap(): void {
@@ -184,30 +203,7 @@ export class DeliveryRouteComponent implements OnInit, OnDestroy {
     });
     L.marker([c.latitude, c.longitude], { icon: customerIcon }).addTo(this.map!);
 
-    // Add routing
-    this.routingControl = L.Routing.control({
-      waypoints: [
-        L.latLng(storeLoc.lat, storeLoc.lng),
-        L.latLng(c.latitude, c.longitude)
-      ],
-      routeWhileDragging: false,
-      showAlternatives: false,
-      fitSelectedRoutes: true,
-      lineOptions: {
-        styles: [{ color: '#1a237e', weight: 4, opacity: 0.8 }]
-      },
-      createMarker: () => null
-    } as any).addTo(this.map!);
-
-    this.routingControl.on('routesfound', (e: any) => {
-      const routes = e.routes;
-      if (routes.length > 0) {
-        const summary = routes[0].summary;
-        this.routeDistance = summary.totalDistance > 1000
-          ? (summary.totalDistance / 1000).toFixed(1) + ' km'
-          : Math.round(summary.totalDistance) + ' m';
-        this.routeTime = Math.round(summary.totalTime / 60) + ' phút';
-      }
-    });
+    // Fetch initial route from store to customer
+    this.fetchRoute(storeLoc.lat, storeLoc.lng, c.latitude, c.longitude);
   }
 }
