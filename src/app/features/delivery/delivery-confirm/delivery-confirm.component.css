@@ -1,0 +1,88 @@
+.confirm-container { max-width: 600px; margin: 0 auto; }
+.page-header { margin-bottom: 12px; }
+h2 { margin: 0 0 16px; font-size: 20px; font-weight: 500; }
+.order-form { margin-bottom: 12px; }
+.form-row { display: flex; gap: 12px; margin-bottom: 8px; }
+.half-width { flex: 1; }
+.full-width { width: 100%; }
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+.total-amount { color: #1a237e; font-weight: 600; }
+.payment-breakdown {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 15px;
+}
+.breakdown-value { font-weight: 600; color: #1a237e; }
+.paid-row { border-top: 1px solid #e0e0e0; padding-top: 8px; margin-top: 4px; }
+.paid-amount { font-weight: 600; color: #388e3c; }
+.debt-amount { font-weight: 600; color: #f44336; }
+.full-paid { font-weight: 600; color: #388e3c; background: #e8f5e9; padding: 2px 10px; border-radius: 4px; }
+.evidence-section { margin-bottom: 12px; }
+.evidence-row { margin-bottom: 12px; }
+.big-btn {
+  width: 100%;
+  padding: 16px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  border-radius: 12px !important;
+}
+.camera-btn { background: #1976d2 !important; color: white !important; }
+.signature-btn { background: #7b1fa2 !important; color: white !important; }
+.photo-preview, .signature-preview {
+  position: relative;
+  margin: 12px 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.photo-preview img, .signature-preview img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  background: #f5f5f5;
+}
+.signature-pad-container {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  margin: 12px 0;
+}
+.signature-canvas {
+  width: 100%;
+  height: 150px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: crosshair;
+  touch-action: none;
+}
+.signature-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.confirm-action { margin-top: 16px; }
+.confirm-btn {
+  background: #4caf50 !important;
+  color: white !important;
+  font-size: 17px !important;
+}
+@media (max-width: 768px) {
+  .form-row { flex-direction: column; gap: 0; }
+}

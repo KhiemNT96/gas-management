@@ -1,0 +1,40 @@
+<div class="form-container">
+      <mat-card>
+        <mat-card-header><mat-card-title>Tạo đơn hàng mới</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Khách hàng</mat-label>
+            <mat-select [(ngModel)]="selectedCustomerId">
+              <mat-option *ngFor="let c of customers$ | async" [value]="c.id">
+                {{ c.name }} - {{ c.phone }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Loại bình gas</mat-label>
+            <mat-select [(ngModel)]="selectedGasType">
+              <mat-option *ngFor="let type of gasTypes" [value]="type">
+                {{ GAS_TYPE_LABELS[type] }} - {{ GAS_PRICES[type] | currency:'VND':'symbol':'1.0-0' }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Số lượng</mat-label>
+            <input matInput type="number" [(ngModel)]="quantity" min="1">
+          </mat-form-field>
+
+          <div class="total-row">
+            <span>Tổng tiền:</span>
+            <span class="total-amount">{{ totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+          </div>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-button routerLink="/orders">Hủy</button>
+          <button mat-raised-button color="primary" (click)="createOrder()" [disabled]="!selectedCustomerId || !selectedGasType">
+            Tạo đơn hàng
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>

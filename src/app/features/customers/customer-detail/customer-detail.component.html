@@ -1,0 +1,112 @@
+<div class="detail-container" *ngIf="customer">
+      <div class="page-header">
+        <button mat-button (click)="goBack()">
+          <span class="material-icons">arrow_back</span> Quay lại
+        </button>
+        <div>
+          <button mat-raised-button color="primary" [routerLink]="['/customers', customer.id, 'edit']">
+            Sửa
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteCustomer()" style="margin-left:8px">
+            Xóa
+          </button>
+        </div>
+      </div>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ customer.name }}</mat-card-title>
+          <mat-card-subtitle>{{ customer.id }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-row">
+            <span class="label">Số điện thoại:</span>
+            <a href="tel:{{ customer.phone }}">{{ customer.phone }}</a>
+          </div>
+          <div class="info-row">
+            <span class="label">Địa chỉ:</span>
+            <span>{{ customer.address }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Khu vực:</span>
+            <span>{{ customer.area }}</span>
+          </div>
+          <div class="info-row" *ngIf="customer.note">
+            <span class="label">Ghi chú đường đi:</span>
+            <span class="note-text">{{ customer.note }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Công nợ:</span>
+            <span class="debt" [class.negative]="customer.currentDebt > 0">
+              {{ customer.currentDebt | currency:'VND':'symbol':'1.0-0' }}
+            </span>
+          </div>
+          <div class="info-row" *ngIf="customer.gasDebt > 0">
+            <span class="label">- Nợ bình gas:</span>
+            <span class="debt negative">{{ customer.gasDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="info-row" *ngIf="customer.stoveDebt > 0">
+            <span class="label">- Nợ bếp gas:</span>
+            <span class="debt negative">{{ customer.stoveDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Lần mua gần nhất:</span>
+            <span>{{ (customer.lastPurchaseDate | date:'dd/MM/yyyy') || 'Chưa có' }}</span>
+          </div>
+
+          <!-- Customer photo -->
+          <div class="info-row photo-row" *ngIf="customer.photoUrl">
+            <span class="label">Ảnh nhà:</span>
+            <div class="photo-wrapper">
+              <img [src]="customer.photoUrl" alt="Ảnh nhà khách hàng" class="customer-photo"
+                (click)="openPhoto()">
+            </div>
+          </div>
+
+          <!-- Mini map -->
+          <div class="info-row map-row" *ngIf="customer.latitude && customer.longitude">
+            <span class="label">Vị trí:</span>
+            <div class="mini-map-container">
+              <div id="mini-map-{{ customer.id }}" class="mini-map"></div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="order-history">
+        <mat-card-header>
+          <mat-card-title>Lịch sử mua hàng</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="order-item" *ngFor="let order of orders$ | async">
+            <div class="order-header">
+              <span class="order-id">{{ order.id }}</span>
+              <span class="order-date">{{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="order-details">
+              <span>{{ order.quantity }} x Bình {{ order.gasType }}</span>
+              <span class="order-total">{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+            </div>
+            <div class="order-status">
+              <span class="status-badge" [class.delivered]="order.deliveryStatus === 'delivered'">
+                {{ order.deliveryStatus === 'delivered' ? 'Đã giao' : 'Chưa giao' }}
+              </span>
+              <span class="payment-badge" [class.debt]="order.debtAmount > 0" [class.paid]="order.debtAmount === 0">
+                {{ order.debtAmount > 0 ? 'Còn nợ ' + (order.debtAmount | currency:'VND':'symbol':'1.0-0') : 'Đã thanh toán' }}
+              </span>
+            </div>
+          </div>
+          <div class="no-data" *ngIf="(orders$ | async)?.length === 0">
+            Chưa có lịch sử mua hàng
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Photo dialog overlay -->
+      <div class="photo-overlay" *ngIf="showPhoto" (click)="showPhoto = false">
+        <img [src]="customer.photoUrl" class="photo-full" (click)="$event.stopPropagation()">
+        <button mat-icon-button class="close-btn" (click)="showPhoto = false">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>

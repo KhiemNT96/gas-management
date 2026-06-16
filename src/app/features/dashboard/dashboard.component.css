@@ -1,0 +1,212 @@
+.dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .page-title {
+      margin: 0 0 20px;
+      font-size: 22px;
+      font-weight: 500;
+      color: #333;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card mat-card-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+    }
+    .stat-card mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+      opacity: 0.8;
+    }
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+    }
+    .stat-card.customers { background: #e3f2fd; }
+    .stat-card.customers mat-icon { color: #1976d2; }
+    .stat-card.orders { background: #f3e5f5; }
+    .stat-card.orders mat-icon { color: #7b1fa2; }
+    .stat-card.bottles { background: #e8f5e9; }
+    .stat-card.bottles mat-icon { color: #388e3c; }
+    .stat-card.debt { background: #fff3e0; }
+    .stat-card.debt mat-icon { color: #f57c00; }
+    .stat-card.debt-customers { background: #ffebee; }
+    .stat-card.debt-customers mat-icon { color: #d32f2f; }
+    .stat-card.delivered { background: #e0f2f1; }
+    .stat-card.delivered mat-icon { color: #00796b; }
+    .gas-price-card {
+      margin-bottom: 24px;
+    }
+    .gas-price-card mat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .reset-btn { font-size: 12px !important; }
+    .price-groups { display: flex; flex-direction: column; gap: 20px; }
+    .price-group { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; }
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #1976d2;
+    }
+    .group-title { font-weight: 600; font-size: 15px; color: #1976d2; }
+    .group-count { font-size: 12px; color: #999; }
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .price-header {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 2fr 1fr;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 2px solid #e0e0e0;
+      font-weight: 600;
+      font-size: 12px;
+      color: #666;
+    }
+    .price-row {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 2fr 1fr;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      align-items: center;
+    }
+    .price-row:last-child { border-bottom: none; }
+    .col-brand { font-size: 13px; font-weight: 500; }
+    .brand-name { color: #333; }
+    .col-price { font-size: 14px; }
+    .current-price { font-weight: 600; color: #1976d2; }
+    .col-note { font-size: 11px; color: #888; }
+    .note-text { line-height: 1.3; }
+    .edit-group {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .price-input {
+      width: 110px;
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .price-input:focus { border-color: #1976d2; }
+    .update-btn {
+      min-width: auto !important;
+      padding: 4px 12px !important;
+      font-size: 12px !important;
+      line-height: 28px !important;
+    }
+    .fetch-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 16px 0 8px;
+      padding: 12px;
+      background: #fafafa;
+      border-radius: 8px;
+      border: 1px dashed #ddd;
+    }
+    .fetch-btn {
+      width: 100% !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px !important;
+    }
+    .fetch-btn .material-icons { font-size: 20px; }
+    .price-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      color: #666;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .price-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #999;
+      font-style: italic;
+    }
+    @media (max-width: 600px) {
+      .price-header, .price-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .price-row { padding: 10px 0; }
+      .price-input { width: 100%; }
+      .edit-group { flex-wrap: wrap; }
+    }
+    .recent-orders mat-card-title {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .order-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .order-item:last-child { border-bottom: none; }
+    .order-info {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .order-id {
+      font-weight: 500;
+      color: #1a237e;
+      font-size: 13px;
+    }
+    .order-customer { font-size: 14px; }
+    .order-date {
+      font-size: 12px;
+      color: #666;
+    }
+    .order-amount span {
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .order-amount .debt { color: #f44336; }
+    .no-data {
+      text-align: center;
+      padding: 24px;
+      color: #999;
+    }
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .stat-value { font-size: 20px; }
+    }

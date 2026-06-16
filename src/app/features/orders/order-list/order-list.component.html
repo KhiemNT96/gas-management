@@ -1,0 +1,29 @@
+<div class="order-list-container">
+      <div class="page-header">
+        <h2>Đơn hàng</h2>
+        <a mat-raised-button color="primary" routerLink="/orders/new">
+          <span class="material-icons">add</span> Tạo đơn
+        </a>
+      </div>
+
+      <div class="order-card" *ngFor="let order of orders$ | async">
+        <div class="order-header">
+          <span class="order-id">{{ order.id }}</span>
+          <span class="order-date">{{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          <span class="status" [class.delivered]="order.deliveryStatus === 'delivered'"
+            [class.pending]="order.deliveryStatus === 'pending'">
+            {{ order.deliveryStatus === 'delivered' ? 'Đã giao' : 'Chờ giao' }}
+          </span>
+        </div>
+        <div class="order-body">
+          <span class="customer-name">{{ order.customerName }}</span>
+          <span class="order-detail">{{ order.quantity }} x Bình {{ order.gasType }}</span>
+        </div>
+        <div class="order-footer">
+          <span class="total">{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+          <span class="debt" *ngIf="order.debtAmount > 0">Còn nợ: {{ order.debtAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+          <span class="paid" *ngIf="order.debtAmount === 0">Đã thanh toán</span>
+        </div>
+      </div>
+      <div class="no-data" *ngIf="(orders$ | async)?.length === 0">Chưa có đơn hàng</div>
+    </div>

@@ -1,0 +1,43 @@
+<div class="sidebar-overlay" *ngIf="isOpen" (click)="closeSidebar.emit()"></div>
+    <nav class="sidebar" [class.open]="isOpen">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="logo-icon">🔥</span>
+          <div class="logo-text">
+            <h2>Gas Long Phụng</h2>
+            <small>Quản lý bán gas</small>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-menu">
+        <a routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebar.emit()" class="menu-item">
+          <span class="material-icons">dashboard</span>
+          <span>Tổng quan</span>
+        </a>
+        <a routerLink="/customers" routerLinkActive="active" (click)="closeSidebar.emit()" class="menu-item">
+          <span class="material-icons">people</span>
+          <span>Khách hàng</span>
+        </a>
+        <a routerLink="/orders" routerLinkActive="active" (click)="closeSidebar.emit()" class="menu-item">
+          <span class="material-icons">receipt_long</span>
+          <span>Đơn hàng</span>
+        </a>
+        <a routerLink="/delivery" routerLinkActive="active" (click)="closeSidebar.emit()" class="menu-item">
+          <span class="material-icons">local_shipping</span>
+          <span>Giao gas</span>
+        </a>
+        <a routerLink="/inventory" routerLinkActive="active" (click)="closeSidebar.emit()" class="menu-item">
+          <span class="material-icons">inventory</span>
+          <span>Kho gas</span>
+        </a>
+        <a routerLink="/debts" routerLinkActive="active" (click)="closeSidebar.emit()" class="menu-item">
+          <span class="material-icons">payments</span>
+          <span>Công nợ</span>
+        </a>
+        <div class="sidebar-divider"></div>
+        <a routerLink="/settings" routerLinkActive="active" (click)="closeSidebar.emit()" class="menu-item settings-item">
+          <span class="material-icons">settings</span>
+          <span>Cài đặt</span>
+        </a>
+      </div>
+    </nav>

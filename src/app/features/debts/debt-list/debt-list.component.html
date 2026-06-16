@@ -1,0 +1,37 @@
+<div class="debt-container">
+      <h2>Công nợ khách hàng</h2>
+
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <div class="summary-row">
+            <span>Tổng công nợ:</span>
+            <span class="total-debt">{{ totalDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Số khách còn nợ:</span>
+            <span class="count">{{ debtCustomers.length }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="debt-card" *ngFor="let customer of debtCustomers">
+        <div class="debt-header">
+          <span class="customer-name">{{ customer.name }}</span>
+          <span class="customer-phone">{{ customer.phone }}</span>
+        </div>
+        <div class="debt-body">
+          <span class="debt-amount">{{ customer.currentDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+          <span class="last-purchase">Lần mua: {{ customer.lastPurchaseDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="debt-detail">
+          <span class="debt-gas" *ngIf="customer.gasDebt > 0">Bình gas: {{ customer.gasDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+          <span class="debt-stove" *ngIf="customer.stoveDebt > 0">Bếp gas: {{ customer.stoveDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="debt-actions">
+          <button mat-button color="primary" [routerLink]="['/customers', customer.id]">Chi tiết</button>
+        </div>
+      </div>
+      <div class="no-data" *ngIf="debtCustomers.length === 0">
+        Không có khách hàng còn nợ
+      </div>
+    </div>

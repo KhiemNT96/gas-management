@@ -1,0 +1,120 @@
+<div class="form-container">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ isEdit ? 'Sửa thông tin khách hàng' : 'Thêm khách hàng mới' }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-field">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Tên khách hàng</mat-label>
+              <input matInput [(ngModel)]="customer.name" placeholder="Nhập tên" required>
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Số điện thoại</mat-label>
+              <input matInput [(ngModel)]="customer.phone" placeholder="090xxxxxxx" type="tel">
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Khu vực</mat-label>
+              <mat-select [(ngModel)]="customer.area">
+                <mat-option value="Thôn 1">Thôn 1</mat-option>
+                <mat-option value="Thôn 2">Thôn 2</mat-option>
+                <mat-option value="Thôn 3">Thôn 3</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Địa chỉ</mat-label>
+              <input matInput [(ngModel)]="customer.address" placeholder="Nhập địa chỉ (vd: thôn, xóm)">
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Ghi chú đường đi</mat-label>
+              <textarea matInput [(ngModel)]="customer.note" rows="2"
+                placeholder="Mô tả chi tiết để dễ tìm nhà, vd: cạnh nhà màu xanh, cách nhà ông Bảy 2 căn, đối diện miếu Thần..."></textarea>
+            </mat-form-field>
+          </div>
+
+          <!-- Only show initial debt fields when adding new customer -->
+          <div class="form-row" *ngIf="!isEdit">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Nợ bình gas sẵn (VNĐ)</mat-label>
+              <input matInput [(ngModel)]="initialGasDebt" type="number" min="0" step="1000" placeholder="0">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Nợ bếp gas sẵn (VNĐ)</mat-label>
+              <input matInput [(ngModel)]="initialStoveDebt" type="number" min="0" step="1000" placeholder="0">
+            </mat-form-field>
+          </div>
+
+          <!-- Photo upload -->
+          <div class="form-row photo-section">
+            <label class="photo-label">📸 Ảnh nhà khách hàng:</label>
+            <div class="photo-upload-area">
+              <button mat-stroked-button type="button" (click)="photoInput.click()" class="photo-btn">
+                <span class="material-icons">add_a_photo</span>
+                {{ customer.photoUrl ? 'Chọn ảnh khác' : 'Chọn ảnh' }}
+              </button>
+              <button mat-stroked-button type="button" *ngIf="customer.photoUrl" (click)="removePhoto()" color="warn">
+                <span class="material-icons">delete</span> Xóa ảnh
+              </button>
+              <input #photoInput type="file" accept="image/*" capture="environment"
+                (change)="onPhotoSelected($event)" style="display:none">
+            </div>
+            <div class="photo-preview" *ngIf="customer.photoUrl">
+              <img [src]="customer.photoUrl" alt="Ảnh nhà khách hàng" class="preview-img">
+            </div>
+          </div>
+
+          <!-- Map with search -->
+          <div class="form-row map-section">
+            <label class="photo-label">🗺️ Click chọn vị trí trên bản đồ vệ tinh:</label>
+            <!-- Search box -->
+            <div class="map-search-box">
+              <span class="material-icons search-icon">search</span>
+              <input
+                type="text"
+                [(ngModel)]="searchText"
+                (input)="onSearchInput()"
+                placeholder="Tìm địa điểm (vd: Long Phụng, Quảng Ngãi)..."
+                class="map-search-input"
+              />
+              <button mat-button *ngIf="searchText" (click)="clearSearch()" class="clear-search-btn">
+                <span class="material-icons">close</span>
+              </button>
+              <div class="search-results" *ngIf="searchResults.length > 0">
+                <div
+                  class="search-result-item"
+                  *ngFor="let result of searchResults"
+                  (click)="selectLocation(result)"
+                  [innerHTML]="result.display_name">
+                </div>
+              </div>
+            </div>
+            <div class="gps-row">
+              <button mat-raised-button color="accent" type="button" (click)="getCurrentLocation()" [disabled]="isGettingLocation" class="gps-btn">
+                <span class="material-icons">my_location</span>
+                {{ isGettingLocation ? 'Đang lấy vị trí...' : '📍 Lấy vị trí hiện tại' }}
+              </button>
+            </div>
+            <div class="coord-info">
+              Vĩ độ: {{ customer.latitude.toFixed(6) }}, Kinh độ: {{ customer.longitude.toFixed(6) }}
+            </div>
+            <div class="map-container">
+              <div id="location-map"></div>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-button routerLink="/customers">Hủy</button>
+          <button mat-raised-button color="primary" (click)="save()" [disabled]="!customer.name">
+            {{ isEdit ? 'Cập nhật' : 'Thêm mới' }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>

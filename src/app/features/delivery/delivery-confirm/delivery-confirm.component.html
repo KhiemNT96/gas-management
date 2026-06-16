@@ -1,0 +1,114 @@
+<div class="confirm-container">
+  <div class="page-header">
+    <button mat-button [routerLink]="['/delivery/route', customerId]">
+      <span class="material-icons">arrow_back</span> Quay lại
+    </button>
+  </div>
+
+  <h2>Xác nhận giao gas</h2>
+
+  <mat-card class="order-form">
+    <mat-card-content>
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Loại bình gas</mat-label>
+          <mat-select [(ngModel)]="selectedGasType">
+            <mat-option *ngFor="let type of gasTypes" [value]="type">
+              {{ GAS_TYPE_LABELS[type] }} - {{ GAS_PRICES[type] | currency:'VND':'symbol':'1.0-0' }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Số lượng</mat-label>
+          <input matInput type="number" [(ngModel)]="quantity" min="1" max="10">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Đơn giá</mat-label>
+          <input matInput type="number" [(ngModel)]="unitPrice" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Khách thanh toán</mat-label>
+          <input matInput type="number" [(ngModel)]="paidAmount" (input)="updatePaidAmount()" min="0" placeholder="0">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Nhân viên giao</mat-label>
+          <input matInput [(ngModel)]="staffName" placeholder="Tên nhân viên">
+        </mat-form-field>
+      </div>
+
+      <div class="payment-breakdown">
+        <div class="breakdown-row">
+          <span>💵 Tổng tiền hàng:</span>
+          <span class="breakdown-value">{{ totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="breakdown-row paid-row">
+          <span>✅ Khách thanh toán:</span>
+          <span class="paid-amount">{{ (paidAmount || 0) | currency:'VND':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="breakdown-row" *ngIf="remainingAmount > 0">
+          <span>📝 Khách còn nợ:</span>
+          <span class="debt-amount">{{ remainingAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="breakdown-row" *ngIf="remainingAmount === 0">
+          <span>✅ Đã thanh toán:</span>
+          <span class="full-paid">Đủ tiền</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="evidence-section">
+    <mat-card-header>
+      <mat-card-title>Bằng chứng giao hàng</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="evidence-row">
+        <button mat-raised-button class="big-btn camera-btn" (click)="capturePhoto()">
+          <span class="material-icons">camera_alt</span>
+          <span>Chụp ảnh khách nhận gas</span>
+        </button>
+      </div>
+
+      <div class="photo-preview" *ngIf="capturedPhoto">
+        <img [src]="capturedPhoto" alt="Ảnh khách nhận gas" />
+        <button mat-icon-button color="warn" (click)="capturedPhoto = null">
+          <span class="material-icons">delete</span>
+        </button>
+      </div>
+
+      <div class="evidence-row">
+        <button mat-raised-button class="big-btn signature-btn" (click)="showSignature = !showSignature">
+          <span class="material-icons">draw</span>
+          <span>{{ signatureData ? 'Đã ký' : 'Lấy chữ ký khách hàng' }}</span>
+        </button>
+      </div>
+
+      <div class="signature-pad-container" *ngIf="showSignature">
+        <canvas #signatureCanvas class="signature-canvas" (mousedown)="startSign($event)" (mousemove)="drawSign($event)" (mouseup)="endSign()"
+          (touchstart)="startSign($event)" (touchmove)="drawSign($event)" (touchend)="endSign()"></canvas>
+        <div class="signature-actions">
+          <button mat-button (click)="clearSignature()">Xóa</button>
+          <button mat-button color="primary" (click)="saveSignature()">Lưu chữ ký</button>
+        </div>
+      </div>
+
+      <div class="signature-preview" *ngIf="signatureData && !showSignature">
+        <img [src]="signatureData" alt="Chữ ký khách hàng" />
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="confirm-action">
+    <button mat-raised-button color="primary" class="big-btn confirm-btn"
+      (click)="confirmDelivery()" [disabled]="!selectedGasType || !staffName">
+      <span class="material-icons">check_circle</span>
+      <span>Xác nhận giao hàng thành công</span>
+    </button>
+  </div>
+</div>

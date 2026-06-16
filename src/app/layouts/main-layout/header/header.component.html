@@ -1,0 +1,12 @@
+<header class="header">
+      <button class="menu-button" (click)="toggleSidebar.emit()">
+        <span class="material-icons">menu</span>
+      </button>
+      <div class="header-title">
+        <h1>Gas Văn Mười</h1>
+        <small>Xã Long Phụng, Quảng Ngãi</small>
+      </div>
+      <div class="header-time">
+        {{ currentTime | date:'HH:mm' }}
+      </div>
+    </header>

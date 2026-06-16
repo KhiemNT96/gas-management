@@ -1,0 +1,5 @@
+.form-container { max-width: 600px; margin: 0 auto; }
+    .full-width { width: 100%; margin-bottom: 12px; }
+    .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-size: 18px; font-weight: 500; }
+    .total-amount { color: #1a237e; font-weight: 600; }
+    mat-card-actions { padding: 16px; gap: 8px; }

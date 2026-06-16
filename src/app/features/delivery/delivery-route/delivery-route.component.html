@@ -1,0 +1,90 @@
+<div class="route-container">
+      <div class="page-header">
+        <button mat-button routerLink="/delivery">
+          <span class="material-icons">arrow_back</span> Quay lại
+        </button>
+      </div>
+
+      <div class="customer-info" *ngIf="customer">
+        <mat-card>
+          <mat-card-content>
+            <div class="info-row">
+              <span class="label">Khách hàng:</span>
+              <span class="value">{{ customer.name }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">SĐT:</span>
+              <a class="value phone" [href]="'tel:' + customer.phone">{{ customer.phone }}</a>
+            </div>
+            <div class="info-row">
+              <span class="label">Địa chỉ:</span>
+              <span class="value">{{ customer.address }}</span>
+            </div>
+            <div class="info-row" *ngIf="customer.note">
+              <span class="label">Ghi chú:</span>
+              <span class="value note">{{ customer.note }}</span>
+            </div>
+            <div class="info-row photo-row" *ngIf="customer.photoUrl">
+              <span class="label">Ảnh nhà:</span>
+              <img [src]="customer.photoUrl" class="customer-photo" (click)="showPhoto = !showPhoto">
+            </div>
+            <div class="info-row" *ngIf="customer.currentDebt > 0">
+              <span class="label">Công nợ:</span>
+              <span class="value debt">{{ customer.currentDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="map-container" #mapContainer>
+        <div id="map"></div>
+      </div>
+
+      <div class="gps-row">
+        <button mat-raised-button color="accent" type="button" (click)="getMyLocation()" [disabled]="isGettingLocation" class="gps-btn">
+          <span class="material-icons">my_location</span>
+          {{ isGettingLocation ? 'Đang định vị...' : '📍 Vị trí của tôi' }}
+        </button>
+      </div>
+
+      <div class="route-info" *ngIf="routeDistance">
+        <mat-card>
+          <mat-card-content>
+            <div class="route-stats">
+              <div class="stat">
+                <span class="material-icons">straighten</span>
+                <span>{{ routeDistance }}</span>
+              </div>
+              <div class="stat">
+                <span class="material-icons">schedule</span>
+                <span>{{ routeTime }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Photo overlay -->
+      <div class="photo-overlay" *ngIf="showPhoto && customer?.photoUrl" (click)="showPhoto = false">
+        <img [src]="customer!.photoUrl" class="photo-full" (click)="$event.stopPropagation()">
+        <button mat-icon-button class="close-btn" (click)="showPhoto = false">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="action-buttons" *ngIf="customer">
+        <button mat-raised-button class="big-btn gps-route-btn" (click)="getMyLocation()" [disabled]="isGettingLocation">
+          <span class="material-icons">my_location</span>
+          <span>{{ isGettingLocation ? 'Đang định vị...' : '📍 Chỉ đường đến' }}</span>
+        </button>
+        <button mat-raised-button color="primary" class="big-btn"
+          [routerLink]="['/delivery/confirm', customer.id]">
+          <span class="material-icons">check_circle</span>
+          <span>Đã giao gas</span>
+        </button>
+        <button mat-raised-button class="big-btn call-btn" (click)="callCustomer(customer.phone)">
+          <span class="material-icons">phone</span>
+          <span>Gọi khách</span>
+        </button>
+      </div>
+    </div>

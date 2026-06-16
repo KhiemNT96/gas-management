@@ -1,0 +1,104 @@
+.route-container { max-width: 600px; margin: 0 auto; }
+    .page-header { margin-bottom: 12px; }
+    .customer-info { margin-bottom: 12px; }
+    .info-row {
+      display: flex;
+      padding: 4px 0;
+      gap: 8px;
+    }
+    .info-row .label { font-weight: 500; color: #666; min-width: 80px; font-size: 13px; }
+    .info-row .value { font-size: 14px; }
+    .info-row .phone { color: #1976d2; text-decoration: none; font-weight: 500; }
+    .info-row .note { color: #ff9800; }
+    .info-row .debt { color: #f44336; font-weight: 500; }
+    .map-container {
+      height: 350px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .map-container #map {
+      width: 100%;
+      height: 100%;
+    }
+    .route-stats {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+    }
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .stat .material-icons { font-size: 22px; color: #1976d2; }
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .big-btn {
+      flex: 1;
+      padding: 16px !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 16px;
+      border-radius: 12px !important;
+    }
+    .call-btn {
+      background: #4caf50 !important;
+      color: white !important;
+    }
+    .gps-row { margin-bottom: 12px; }
+    .gps-btn {
+      width: 100% !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px !important;
+    }
+    .gps-route-btn {
+      background: #ff9800 !important;
+      color: white !important;
+    }
+    .photo-row { flex-direction: column; }
+    .customer-photo {
+      max-width: 100%;
+      max-height: 150px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .customer-photo:hover { transform: scale(1.02); }
+    .photo-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      cursor: pointer;
+    }
+    .photo-full {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+      cursor: default;
+    }
+    .close-btn {
+      position: fixed !important;
+      top: 16px;
+      right: 16px;
+      color: white !important;
+      background: rgba(0,0,0,0.5) !important;
+    }

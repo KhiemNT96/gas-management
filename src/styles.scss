@@ -1,0 +1,86 @@
+/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background: #f5f5f5;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+// Material overrides for mobile
+.mat-mdc-card {
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+}
+
+.mat-mdc-raised-button {
+  border-radius: 8px !important;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+// Mobile optimizations
+@media (max-width: 768px) {
+  .mat-mdc-card {
+    border-radius: 8px !important;
+  }
+  
+  .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+  }
+  
+  .mat-mdc-text-field-wrapper {
+    min-height: 40px !important;
+  }
+  
+  input, select, textarea {
+    font-size: 16px !important; // Prevent zoom on iOS
+  }
+}
+
+// Map container optimizations
+.leaflet-container {
+  font-family: Roboto, sans-serif !important;
+  border-radius: 12px;
+}
+
+.leaflet-routing-container {
+  display: none !important; // Hide routing instructions panel
+}
+
+.custom-marker {
+  background: none !important;
+  border: none !important;
+}
+
+// Signature canvas touch support
+canvas {
+  touch-action: none;
+}

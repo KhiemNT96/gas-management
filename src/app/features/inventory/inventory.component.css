@@ -1,0 +1,141 @@
+.inventory-container { max-width: 800px; margin: 0 auto; }
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .page-header h2 { margin: 0; font-size: 20px; font-weight: 500; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .reset-btn { font-size: 12px !important; }
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .summary-card mat-card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      text-align: center;
+    }
+    .summary-label { font-size: 12px; color: #666; margin-bottom: 4px; }
+    .summary-value { font-size: 28px; font-weight: 700; color: #1976d2; }
+    .summary-value.low-stock { color: #ff9800; }
+    .summary-value.out-of-stock { color: #f44336; }
+    .summary-sub { font-size: 11px; color: #999; }
+
+    .inventory-card { margin-bottom: 16px; }
+    .inv-table { width: 100%; }
+    .inv-header {
+      display: grid;
+      grid-template-columns: 1.5fr 0.8fr 0.8fr 2fr;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 2px solid #e0e0e0;
+      font-weight: 600;
+      font-size: 13px;
+      color: #666;
+      align-items: center;
+    }
+    .inv-row {
+      display: grid;
+      grid-template-columns: 1.5fr 0.8fr 0.8fr 2fr;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      align-items: center;
+    }
+    .inv-row:last-child { border-bottom: none; }
+    .col-name { font-weight: 500; font-size: 14px; }
+    .col-qty { text-align: center; }
+    .qty-badge {
+      display: inline-block;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1976d2;
+    }
+    .qty-badge.low-stock { color: #ff9800; }
+    .qty-badge.out-of-stock { color: #f44336; }
+    .status-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .status-tag.sufficient { background: #e8f5e9; color: #388e3c; }
+    .status-tag.low { background: #fff3e0; color: #f57c00; }
+    .status-tag.empty { background: #ffebee; color: #d32f2f; }
+    .action-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+    .act-btn {
+      min-width: auto !important;
+      padding: 4px 10px !important;
+      font-size: 11px !important;
+      line-height: 24px !important;
+    }
+    .edit-btn { background: #ff9800 !important; color: white !important; }
+
+    /* Transaction history */
+    .tx-card { margin-bottom: 24px; }
+    .tx-filters { margin-bottom: 12px; }
+    .filter-select { width: 200px; margin-bottom: 0; }
+    .tx-list { max-height: 400px; overflow-y: auto; }
+    .tx-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .tx-item:last-child { border-bottom: none; }
+    .tx-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .tx-type { font-weight: 600; font-size: 12px; }
+    .tx-nhap { color: #388e3c; }
+    .tx-xuat { color: #d32f2f; }
+    .tx-sua { color: #f57c00; }
+    .tx-date { font-size: 11px; color: #999; }
+    .tx-details {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .tx-item-label { font-weight: 500; font-size: 14px; flex: 1; }
+    .tx-qty { font-weight: 700; font-size: 14px; }
+    .qty-plus { color: #388e3c; }
+    .qty-minus { color: #d32f2f; }
+    .tx-price { font-size: 12px; color: #1976d2; font-weight: 500; }
+    .tx-note { font-size: 12px; color: #999; margin-top: 2px; }
+    .no-data { text-align: center; padding: 24px; color: #999; }
+
+    /* Dialog */
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .dialog-box {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .dialog-box h3 { margin: 0 0 12px; font-size: 18px; }
+    .dialog-info { margin: 0 0 12px; font-size: 14px; color: #666; }
+    .full-width { width: 100%; margin-bottom: 12px; }
+    .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+    @media (max-width: 600px) {
+      .inv-header, .inv-row { grid-template-columns: 1fr 0.6fr 0.6fr 1.5fr; font-size: 12px; }
+      .summary-row { grid-template-columns: repeat(2, 1fr); }
+    }

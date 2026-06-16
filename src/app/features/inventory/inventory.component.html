@@ -1,0 +1,204 @@
+<div class="inventory-container">
+      <div class="page-header">
+        <h2>📦 Quản lý kho gas</h2>
+        <div class="header-actions">
+          <button mat-stroked-button color="warn" (click)="confirmReset()" class="reset-btn">
+            <span class="material-icons">delete_sweep</span> Xóa tồn kho
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary cards by type -->
+      <div class="summary-row">
+        <mat-card class="summary-card" *ngFor="let item of items">
+          <mat-card-content>
+            <span class="summary-label">{{ item.label }}</span>
+            <span class="summary-value" [class.low-stock]="item.quantity > 0 && item.quantity <= 3"
+              [class.out-of-stock]="item.quantity === 0">
+              {{ item.quantity }}
+            </span>
+            <span class="summary-sub">bình</span>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Inventory detail table with actions -->
+      <mat-card class="inventory-card">
+        <mat-card-header>
+          <mat-card-title>Chi tiết & thao tác</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="inv-table">
+            <div class="inv-header">
+              <span class="col-name">Loại bình</span>
+              <span class="col-qty">Tồn kho</span>
+              <span class="col-status">Trạng thái</span>
+              <span class="col-actions">Nhập / Xuất / Sửa</span>
+            </div>
+            <div class="inv-row" *ngFor="let item of items">
+              <span class="col-name">{{ item.label }}</span>
+              <span class="col-qty">
+                <span class="qty-badge" [class.low-stock]="item.quantity > 0 && item.quantity <= 3"
+                  [class.out-of-stock]="item.quantity === 0">
+                  {{ item.quantity }}
+                </span>
+              </span>
+              <span class="col-status">
+                <span class="status-tag" [class.sufficient]="item.quantity > 3"
+                  [class.low]="item.quantity > 0 && item.quantity <= 3"
+                  [class.empty]="item.quantity === 0">
+                  {{ item.quantity === 0 ? 'Hết' : item.quantity <= 3 ? 'Sắp hết' : 'Còn' }}
+                </span>
+              </span>
+              <span class="col-actions">
+                <div class="action-btns">
+                  <button mat-raised-button color="primary" class="act-btn" (click)="openAddStock(item)">
+                    ➕ Nhập
+                  </button>
+                  <button mat-raised-button color="warn" class="act-btn" (click)="openRemoveStock(item)"
+                    [disabled]="item.quantity <= 0">
+                    ➖ Xuất
+                  </button>
+                  <button mat-raised-button class="act-btn edit-btn" (click)="openEditStock(item)">
+                    ✏️ Sửa
+                  </button>
+                </div>
+              </span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Transaction history -->
+      <mat-card class="tx-card">
+        <mat-card-header>
+          <mat-card-title>📋 Lịch sử nhập/xuất</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="tx-filters">
+            <mat-form-field appearance="outline" class="filter-select">
+              <mat-label>Loại giao dịch</mat-label>
+              <mat-select [(ngModel)]="txFilter" (ngModelChange)="applyTxFilter()">
+                <mat-option value="all">Tất cả</mat-option>
+                <mat-option value="nhập">Nhập</mat-option>
+                <mat-option value="xuất">Xuất</mat-option>
+                <mat-option value="sửa">Sửa</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="tx-list">
+            <div class="tx-item" *ngFor="let tx of filteredTransactions">
+              <div class="tx-header">
+                <span class="tx-type" [class.tx-nhap]="tx.type === 'nhập'"
+                  [class.tx-xuat]="tx.type === 'xuất'"
+                  [class.tx-sua]="tx.type === 'sửa'">
+                  {{ tx.type === 'nhập' ? '📥' : tx.type === 'xuất' ? '📤' : '✏️' }} {{ tx.type.toUpperCase() }}
+                </span>
+                <span class="tx-date">{{ tx.date | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <div class="tx-details">
+                <span class="tx-item-label">{{ tx.itemLabel }}</span>
+                <span class="tx-qty" [class.qty-plus]="tx.type === 'nhập' || (tx.type === 'sửa' && tx.quantity > 0)"
+                  [class.qty-minus]="tx.type === 'xuất' || (tx.type === 'sửa' && tx.quantity < 0)">
+                  {{ tx.type === 'xuất' ? '-' : tx.type === 'nhập' ? '+' : (tx.quantity > 0 ? '+' : '') }}{{ tx.quantity }}
+                </span>
+                <span class="tx-price" *ngIf="tx.price > 0">{{ tx.price | currency:'VND':'symbol':'1.0-0' }}/bình</span>
+              </div>
+              <div class="tx-note" *ngIf="tx.note">
+                <span>💬 {{ tx.note }}</span>
+              </div>
+            </div>
+            <div class="no-data" *ngIf="filteredTransactions.length === 0">
+              Chưa có giao dịch nào
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Nhập kho Dialog -->
+      <div class="dialog-overlay" *ngIf="showAdd" (click)="closeAll()">
+        <div class="dialog-box" (click)="$event.stopPropagation()">
+          <h3>📥 Nhập kho</h3>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Loại bình</mat-label>
+            <mat-select [(ngModel)]="dialogItemSize">
+              <mat-option *ngFor="let item of items" [value]="item.size">{{ item.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Số lượng nhập</mat-label>
+            <input matInput type="number" [(ngModel)]="dialogQty" min="1" step="1">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Giá nhập (VNĐ/bình)</mat-label>
+            <input matInput type="number" [(ngModel)]="dialogPrice" min="0" step="1000" placeholder="0">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Ghi chú</mat-label>
+            <input matInput [(ngModel)]="dialogNote" placeholder="VD: Nhập từ đại lý...">
+          </mat-form-field>
+          <div class="dialog-actions">
+            <button mat-button (click)="closeAll()">Hủy</button>
+            <button mat-raised-button color="primary" (click)="confirmAdd()" [disabled]="!dialogQty || dialogQty <= 0">
+              ✅ Nhập
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Xuất kho Dialog -->
+      <div class="dialog-overlay" *ngIf="showRemove" (click)="closeAll()">
+        <div class="dialog-box" (click)="$event.stopPropagation()">
+          <h3>📤 Xuất kho</h3>
+          <p class="dialog-info">Loại: <strong>{{ selectedItem?.label }}</strong> | Tồn: <strong>{{ selectedItem?.quantity }}</strong></p>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Loại bình</mat-label>
+            <mat-select [(ngModel)]="dialogItemSize">
+              <mat-option *ngFor="let item of items" [value]="item.size">{{ item.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Số lượng xuất (tối đa {{ currentItemQty }})</mat-label>
+            <input matInput type="number" [(ngModel)]="dialogQty" min="1" [max]="currentItemQty" step="1">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Giá xuất (VNĐ/bình)</mat-label>
+            <input matInput type="number" [(ngModel)]="dialogPrice" min="0" step="1000" placeholder="0">
+          </mat-form-field>
+          <div class="dialog-actions">
+            <button mat-button (click)="closeAll()">Hủy</button>
+            <button mat-raised-button color="warn" (click)="confirmRemove()" [disabled]="!dialogQty || dialogQty <= 0 || dialogQty > currentItemQty">
+              ✅ Xuất
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sửa kho Dialog -->
+      <div class="dialog-overlay" *ngIf="showEdit" (click)="closeAll()">
+        <div class="dialog-box" (click)="$event.stopPropagation()">
+          <h3>✏️ Cập nhật tồn kho</h3>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Loại bình</mat-label>
+            <mat-select [(ngModel)]="dialogItemSize" (ngModelChange)="onEditTypeChange()">
+              <mat-option *ngFor="let item of items" [value]="item.size">{{ item.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <p class="dialog-info">Tồn hiện tại: <strong>{{ editCurrentQty }}</strong></p>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Số lượng mới</mat-label>
+            <input matInput type="number" [(ngModel)]="dialogQty" min="0" step="1">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Giá (VNĐ/bình)</mat-label>
+            <input matInput type="number" [(ngModel)]="dialogPrice" min="0" step="1000" placeholder="0">
+          </mat-form-field>
+          <div class="dialog-actions">
+            <button mat-button (click)="closeAll()">Hủy</button>
+            <button mat-raised-button color="primary" (click)="confirmEdit()" [disabled]="dialogQty < 0">
+              ✅ Cập nhật
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>

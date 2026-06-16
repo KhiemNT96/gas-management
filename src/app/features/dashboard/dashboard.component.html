@@ -1,0 +1,148 @@
+<div class="dashboard-container">
+      <h2 class="page-title">Tổng quan</h2>
+
+      <div class="stats-grid">
+        <mat-card class="stat-card customers">
+          <mat-card-content>
+            <div class="stat-info">
+              <span class="stat-label">Tổng khách hàng</span>
+              <span class="stat-value">{{ (stats$ | async)?.totalCustomers }}</span>
+            </div>
+            <mat-icon>people</mat-icon>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card orders">
+          <mat-card-content>
+            <div class="stat-info">
+              <span class="stat-label">Tổng đơn hàng</span>
+              <span class="stat-value">{{ (stats$ | async)?.totalOrders }}</span>
+            </div>
+            <mat-icon>receipt_long</mat-icon>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card bottles">
+          <mat-card-content>
+            <div class="stat-info">
+              <span class="stat-label">Bình gas đã bán</span>
+              <span class="stat-value">{{ (stats$ | async)?.totalBottlesSold }}</span>
+            </div>
+            <mat-icon>propane_tank</mat-icon>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card debt">
+          <mat-card-content>
+            <div class="stat-info">
+              <span class="stat-label">Tổng tiền nợ</span>
+              <span class="stat-value">{{ (stats$ | async)?.totalDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+            </div>
+            <mat-icon>payments</mat-icon>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card debt-customers">
+          <mat-card-content>
+            <div class="stat-info">
+              <span class="stat-label">Khách còn nợ</span>
+              <span class="stat-value">{{ (stats$ | async)?.debtCustomerCount }}</span>
+            </div>
+            <mat-icon>warning</mat-icon>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card delivered">
+          <mat-card-content>
+            <div class="stat-info">
+              <span class="stat-label">Đã giao hôm nay</span>
+              <span class="stat-value">{{ (stats$ | async)?.deliveredToday }}</span>
+            </div>
+            <mat-icon>local_shipping</mat-icon>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Bảng giá gas -->
+      <mat-card class="gas-price-card">
+        <mat-card-header>
+          <mat-card-title>💰 Bảng giá gas - Quảng Ngãi</mat-card-title>
+          <button mat-button color="warn" (click)="resetPrices()" class="reset-btn">↺ Mặc định</button>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="price-groups">
+            <div class="price-group" *ngFor="let group of priceGroups">
+              <div class="group-header">
+                <span class="group-title">{{ group.label }}</span>
+                <span class="group-count">({{ group.items.length }} thương hiệu)</span>
+              </div>
+              <div class="price-table">
+                <div class="price-header">
+                  <span class="col-brand">Thương hiệu</span>
+                  <span class="col-price">Giá đổi nước gas</span>
+                  <span class="col-note">Đặc điểm</span>
+                  <span class="col-action">Cập nhật</span>
+                </div>
+                <div class="price-row" *ngFor="let item of group.items">
+                  <span class="col-brand">
+                    <span class="brand-name">{{ item.brand }}</span>
+                  </span>
+                  <span class="col-price current-price">{{ item.price | currency:'VND':'symbol':'1.0-0' }}</span>
+                  <span class="col-note note-text">{{ item.note }}</span>
+                  <span class="col-action">
+                    <div class="edit-group">
+                      <input
+                        type="number"
+                        [(ngModel)]="editPrices[group.id + '_' + item.brand]"
+                        [placeholder]="(item.price | currency:'VND':'symbol':'1.0-0')"
+                        class="price-input"
+                        min="0"
+                        step="100">
+                      <button mat-raised-button color="primary" class="update-btn"
+                        (click)="updatePrice(group.id, item.brand)" [disabled]="!editPrices[group.id + '_' + item.brand] || editPrices[group.id + '_' + item.brand] <= 0">
+                        Lưu
+                      </button>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Market fetch + status -->
+          <div class="fetch-section">
+            <button mat-raised-button color="accent" (click)="fetchMarketPrices()" [disabled]="isFetching" class="fetch-btn">
+              <span class="material-icons">cloud_download</span>
+              {{ isFetching ? 'Đang cập nhật...' : '🔄 Cập nhật giá từ thị trường' }}
+            </button>
+            <div class="price-meta" *ngIf="priceMeta.lastUpdated">
+              <span class="meta-label">📅 Cập nhật: {{ priceMeta.lastUpdated | date:'dd/MM/yyyy HH:mm' }}</span>
+              <span class="meta-source">📡 Nguồn: {{ priceMeta.source }}</span>
+            </div>
+          </div>
+          <div class="price-note">
+            💡 Nhập giá mới và bấm "Lưu" để cập nhật bảng giá. Giá sẽ được áp dụng khi tạo đơn hàng mới.
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="recent-orders">
+        <mat-card-header>
+          <mat-card-title>Đơn hàng gần đây</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="order-item" *ngFor="let order of recentOrders$ | async">
+            <div class="order-info">
+              <span class="order-id">{{ order.id }}</span>
+              <span class="order-customer">{{ order.customerName }}</span>
+              <span class="order-date">{{ order.orderDate | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="order-amount">
+              <span [class.debt]="order.debtAmount > 0">{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+            </div>
+          </div>
+          <div class="no-data" *ngIf="(recentOrders$ | async)?.length === 0">
+            Chưa có đơn hàng nào
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>

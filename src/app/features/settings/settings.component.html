@@ -1,0 +1,69 @@
+<div class="settings-container">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>⚙️ Cài đặt vị trí cửa hàng gas</mat-card-title>
+          <mat-card-subtitle>Thiết lập vị trí cửa hàng để tính đường đi giao gas</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-text">
+            <p>📌 <strong>Vị trí hiện tại:</strong></p>
+            <p class="coord-display">Vĩ độ: {{ location.lat }} | Kinh độ: {{ location.lng }}</p>
+          </div>
+
+          <div class="gps-row">
+            <button mat-raised-button color="accent" type="button" (click)="getCurrentLocation()" [disabled]="isGettingLocation" class="gps-btn">
+              <span class="material-icons">my_location</span>
+              {{ isGettingLocation ? 'Đang lấy vị trí...' : '📍 Lấy vị trí hiện tại (GPS)' }}
+            </button>
+          </div>
+
+          <!-- Search address with autocomplete -->
+          <div class="form-row">
+            <div class="search-box">
+              <span class="material-icons search-icon">search</span>
+              <input
+                type="text"
+                [(ngModel)]="searchText"
+                (input)="onSearchInput()"
+                placeholder="🔍 Tìm địa điểm (vd: Long Phụng, Quảng Ngãi)..."
+                class="search-input"
+              />
+              <button mat-button *ngIf="searchText" (click)="clearSearch()" class="clear-btn">
+                <span class="material-icons">close</span>
+              </button>
+              <div class="search-results" *ngIf="searchResults.length > 0">
+                <div
+                  class="search-result-item"
+                  *ngFor="let result of searchResults"
+                  (click)="selectLocation(result)"
+                  [innerHTML]="result.display_name">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Tên cửa hàng</mat-label>
+              <input matInput [(ngModel)]="location.address" placeholder="VD: Cửa hàng gas Long Phụng">
+            </mat-form-field>
+          </div>
+
+          <div class="map-section">
+            <label class="map-label">🗺️ Kéo thả marker để chọn vị trí cửa hàng:</label>
+            <div class="coord-info" *ngIf="markerLat && markerLng">
+              Vĩ độ: {{ markerLat.toFixed(6) }}, Kinh độ: {{ markerLng.toFixed(6) }}
+            </div>
+            <div class="map-container">
+              <div id="settings-map"></div>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-button routerLink="/dashboard">Quay lại</button>
+          <button mat-raised-button color="primary" (click)="save()" [disabled]="!markerLat">
+            💾 Lưu vị trí
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>

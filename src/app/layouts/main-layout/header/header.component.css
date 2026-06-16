@@ -1,0 +1,51 @@
+.header {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      gap: 16px;
+      z-index: 100;
+      min-height: 56px;
+    }
+    .menu-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      display: none;
+      color: #333;
+    }
+    .menu-button:hover {
+      background: #f0f0f0;
+    }
+    .header-title h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      color: #1a237e;
+    }
+    .header-title small {
+      font-size: 11px;
+      color: #666;
+    }
+    .header-time {
+      margin-left: auto;
+      font-size: 20px;
+      font-weight: 500;
+      color: #333;
+    }
+    @media (max-width: 768px) {
+      .menu-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .header-title h1 {
+        font-size: 16px;
+      }
+      .header-title small {
+        display: none;
+      }
+    }

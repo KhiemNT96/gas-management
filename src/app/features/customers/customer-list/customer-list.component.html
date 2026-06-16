@@ -1,0 +1,52 @@
+<div class="customer-list-container">
+      <div class="page-header">
+        <h2>Khách hàng</h2>
+        <div class="header-actions">
+          <button mat-stroked-button color="accent" (click)="importInput.click()" class="excel-btn">
+            <span class="material-icons">upload_file</span> Nhập Excel
+          </button>
+          <button mat-stroked-button (click)="exportAll()" class="excel-btn">
+            <span class="material-icons">download</span> Xuất Excel
+          </button>
+          <a mat-raised-button color="primary" routerLink="/customers/new">
+            <span class="material-icons">add</span> Thêm
+          </a>
+          <input #importInput type="file" accept=".xlsx,.xls" (change)="importExcel($event)" style="display:none">
+        </div>
+      </div>
+
+      <div class="search-box">
+        <span class="material-icons search-icon">search</span>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()"
+          placeholder="Tìm theo tên, số điện thoại..."
+          class="search-input"
+        />
+      </div>
+
+      <div class="customer-grid">
+        <mat-card *ngFor="let customer of customers$ | async" class="customer-card"
+          [routerLink]="['/customers', customer.id]">
+          <mat-card-content>
+            <div class="customer-avatar" [class.has-photo]="customer.photoUrl">
+              <img *ngIf="customer.photoUrl" [src]="customer.photoUrl" class="avatar-photo" alt="">
+              <span class="material-icons" *ngIf="!customer.photoUrl">person</span>
+            </div>
+            <div class="customer-info">
+              <span class="customer-name">{{ customer.name }}</span>
+              <span class="customer-phone">{{ customer.phone }}</span>
+              <span class="customer-address">{{ customer.address }}</span>
+            </div>
+            <div class="customer-debt" *ngIf="customer.currentDebt > 0">
+              <span class="debt-amount">{{ customer.currentDebt | currency:'VND':'symbol':'1.0-0' }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="no-data" *ngIf="(customers$ | async)?.length === 0">
+        Không tìm thấy khách hàng nào
+      </div>
+    </div>
