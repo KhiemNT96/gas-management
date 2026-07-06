@@ -1,4 +1,4 @@
-.header {
+    .header {
       display: flex;
       align-items: center;
       padding: 8px 16px;
@@ -30,11 +30,45 @@
       font-size: 11px;
       color: #666;
     }
-    .header-time {
+    .header-right {
       margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #555;
+      font-size: 13px;
+    }
+    .user-icon {
+      font-size: 20px;
+      color: #1565c0;
+    }
+    .user-name {
+      font-weight: 500;
+    }
+    .header-time {
       font-size: 20px;
       font-weight: 500;
       color: #333;
+    }
+    .logout-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logout-btn:hover {
+      background: #ffebee;
+      color: #c62828;
     }
     @media (max-width: 768px) {
       .menu-button {
@@ -46,6 +80,9 @@
         font-size: 16px;
       }
       .header-title small {
+        display: none;
+      }
+      .user-name {
         display: none;
       }
     }

@@ -51,8 +51,8 @@ export class CustomerListComponent implements OnInit {
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
-    if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
-      this.toast.error('⚠️ Vui lòng chọn file Excel (.xlsx hoặc .xls)');
+    if (!file.name.endsWith('.json')) {
+      this.toast.error('⚠️ Vui lòng chọn file JSON (.json)');
       input.value = '';
       return;
     }

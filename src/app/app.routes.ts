@@ -1,10 +1,18 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
+  {
+    path: 'login',
+    loadComponent: () => import('./features/login/login.component')
+      .then(m => m.LoginComponent),
+    title: 'Đăng nhập'
+  },
   {
     path: '',
     loadComponent: () => import('./layouts/main-layout/main-layout.component')
       .then(m => m.MainLayoutComponent),
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',

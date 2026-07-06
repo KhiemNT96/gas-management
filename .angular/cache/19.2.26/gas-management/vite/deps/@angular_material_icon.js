@@ -44,10 +44,10 @@ import {
   ɵɵprojection,
   ɵɵprojectionDef
 } from "./chunk-VWKQAGMQ.js";
+import "./chunk-WMWTRTCA.js";
 import {
   forkJoin
 } from "./chunk-QO67QQ3F.js";
-import "./chunk-WMWTRTCA.js";
 import {
   Subscription,
   catchError,

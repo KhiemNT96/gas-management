@@ -1,0 +1,61 @@
+<div class="login-page">
+  <div class="login-card-wrapper">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <div class="login-logo">
+          <span class="logo-icon">🔥</span>
+        </div>
+        <mat-card-title>Gas Văn Mười</mat-card-title>
+        <mat-card-subtitle>Phần mềm quản lý bán gas</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="login-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tên đăng nhập</mat-label>
+            <input
+              matInput
+              [(ngModel)]="username"
+              placeholder="Nhập tên đăng nhập"
+              (keyup.enter)="onLogin()"
+              autocomplete="username"
+            />
+            <span class="input-icon" matPrefix>👤</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Mật khẩu</mat-label>
+            <input
+              matInput
+              type="password"
+              [(ngModel)]="password"
+              placeholder="Nhập mật khẩu"
+              (keyup.enter)="onLogin()"
+              autocomplete="current-password"
+            />
+            <span class="input-icon" matPrefix>🔒</span>
+          </mat-form-field>
+
+          <div class="error-message" *ngIf="errorMessage">
+            <span class="material-icons">error</span>
+            {{ errorMessage }}
+          </div>
+
+          <button
+            mat-raised-button
+            color="primary"
+            class="full-width login-btn"
+            (click)="onLogin()"
+            [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner"></span>
+            {{ isLoading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
+          </button>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer>
+        <!-- <p class="login-hint">Tài khoản mẫu: <strong>admin</strong> / <strong>admin123</strong></p> -->
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</div>
